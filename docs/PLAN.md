@@ -290,7 +290,7 @@ All endpoints take a Firebase ID token and use Zod schemas from `@crumb/core` on
 - vite-plugin-pwa with `generateSW` precaches the app shell, the font and the lazy-loaded `foods.json`. `/api` calls always go to the network. The manifest includes maskable icons and shortcuts.
 - Camera: `<input type=file accept="image/*" capture="environment">`.
 - Images are compressed with canvas: 1024 px for the AI, a 192 px thumbnail for the timeline.
-- Budgets: initial JS at most 250 KB gzipped, LCP under 2.5 s on 4G, Lighthouse 90+ for performance, PWA and accessibility. Screens are code-split, and charts and the walk planner load lazily.
+- Budgets: initial JS at most 250 KB gzipped (**actual: ~375 KB**, see §19), LCP under 2.5 s on 4G, Lighthouse 90+ for performance, PWA and accessibility. Screens are code-split, and charts and the walk planner load lazily.
 
 ## 12. Security, privacy, safety
 
@@ -406,6 +406,25 @@ The PRD §55 "wow" flow needs only milestones 0–7 and 9.
 - The Firestore location cannot be changed later. `asia-south1` is suggested for Indian users; use `nam5` or `us-central1` otherwise.
 - Google Health's restricted scopes limit the app to 100 test users. With no wearable, demoing it needs a borrowed Fitbit or Pixel Watch.
 - The free tiers could be abused. The caps, the max instance count, App Check and the budget alert cover this.
+
+## 19. Build notes (what changed while building)
+
+Honest differences between this plan and what was built, and why.
+
+| Plan | Built | Why |
+|---|---|---|
+| Initial JS ≤ 250 KB gzipped | **~375 KB** gzipped: Firebase Auth + Firestore 181 KB, React + router 97 KB, other libraries 52 KB, app 44 KB; CSS 7 KB. Insights, Profile and the food table (with Fuse.js) load lazily; the service worker precaches everything after the first visit. | The Firestore SDK with its offline cache is what makes logging instant and offline-proof; it can't be lazy because the first screen reads from it. A Lite SDK would drop the offline queue. |
+| Text logged offline is saved as `pending_ai` and analysed later | The **on-device parser** ("basic mode") estimates immediately, offline or when the AI is unavailable, through the same pipeline as Gemini's output. | Instant feedback beats a queue; the person can still edit everything. |
+| TanStack Query, date-fns, Hono typed client | Not used: Firestore listeners are the data layer, `fetch` + shared Zod schemas validate API responses, dates use `Intl`. | Fewer dependencies and a smaller bundle. |
+| Gemini schema from `z.toJSONSchema` | `toGeminiSchema()` emits the OpenAPI subset `responseSchema` accepts; responses are still re-validated with Zod and sanitised. | Gemini's structured-output schema is a subset of JSON Schema. |
+| Android "share to Crumb" (`share_target`) | Not built; PWA shortcuts open "Log" and "Log a photo" directly. | Receiving shared images needs a custom service-worker POST handler; cut for time. |
+| iOS Shortcut steps webhook | Not built (first item in the cut order). | No wearable in scope; Google Health covers device data. |
+| App Check | Not enabled; per-user and global caps, max instances and budget alerts are in place. | Recommended before a public launch (see `docs/privacy.md`). |
+| Usual-meal templates | Built as planned (3 repeats in 14 days), plus remembered portions snapped to natural servings (whole rotis, half katoris). | Raw averages like "2.4 rotis" read as broken. |
+| — | `scripts/seed-demo.ts`: clearly labelled sample history for demos; `pnpm ai:eval`: 42 labelled meals measuring recall, precision and grams error. | Demo realism without fake data presented as real; measurable AI quality. |
+
+Found by CI rather than by plan: newer Chrome returns a Promise from `window.scrollTo()`,
+which crashed the shell when an effect returned it — now covered by a regression test.
 
 ## Sources (checked Oct 2026)
 
