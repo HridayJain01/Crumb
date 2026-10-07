@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { currentUid, describeMeal, onboard, serverDocs, zoneForLocalHour } from './helpers';
 
 // 5 pm local: afternoon rules apply and the day is still "in progress".

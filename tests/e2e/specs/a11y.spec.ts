@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { expect, test } from './fixtures';
 import { completeOnboarding, describeMeal, zoneForLocalHour } from './helpers';
 
 // Reduced motion lets entrance animations settle, so contrast is measured on the final UI.
