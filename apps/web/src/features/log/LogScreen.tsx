@@ -106,7 +106,7 @@ export function LogScreen() {
           rows={3}
           maxLength={1000}
           placeholder={`e.g. ${placeholder}`}
-          className="w-full resize-none bg-transparent text-[18px] font-bold leading-snug outline-none placeholder:text-muted/50"
+          className="w-full resize-none bg-transparent text-[18px] font-bold leading-snug outline-none placeholder:text-muted"
         />
         {speech.error && <p className="mb-2 text-[13px] font-bold text-danger">{speech.error}</p>}
         <div className="flex items-center gap-2">

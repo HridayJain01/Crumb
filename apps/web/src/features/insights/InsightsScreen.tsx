@@ -195,7 +195,7 @@ export default function InsightsScreen() {
           </span>
           <div className="flex-1">
             <p className="text-[16px] font-extrabold text-teal">Walking loops near you</p>
-            <p className="text-[13px] font-bold text-teal/80">
+            <p className="text-[13px] font-bold text-teal">
               Pick minutes or calories — we’ll map a loop.
             </p>
           </div>

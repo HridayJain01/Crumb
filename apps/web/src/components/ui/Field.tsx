@@ -24,7 +24,7 @@ export function Field({
       >
         <input
           id={id}
-          className="h-full w-full bg-transparent text-[16px] font-bold outline-none placeholder:text-muted/60"
+          className="h-full w-full bg-transparent text-[16px] font-bold outline-none placeholder:text-muted"
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={hint || error ? `${id}-hint` : undefined}
           {...rest}

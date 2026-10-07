@@ -16,7 +16,7 @@
     "format:check": "prettier --check .",
     "test": "pnpm -r --filter \"./packages/*\" --filter \"./apps/*\" test",
     "test:rules": "firebase emulators:exec --only firestore --project demo-crumb \"pnpm --filter @crumb/rules-tests test\"",
-    "test:e2e": "pnpm --filter @crumb/e2e test",
+    "test:e2e": "firebase emulators:exec --only auth,firestore --project demo-crumb \"pnpm --filter @crumb/e2e test\"",
     "ai:eval": "tsx scripts/ai-eval.ts",
     "foods:lookup": "tsx scripts/foods-lookup.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",

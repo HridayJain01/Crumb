@@ -3,6 +3,7 @@ import type { FoodEntry, FoodItem } from '../schemas/food';
 import type { MemoryHint } from '../schemas/api';
 import type { Correction, FoodMemory, MealTemplate, MealTemplateWithId } from '../schemas/memory';
 import { mealTypeForHour, MEAL_LABEL } from '../dates';
+import { approxKcal } from '../format';
 import { applyFatFactor, finalizeItem, memoryKeyFor } from '../nutrition/estimate';
 import { formatQuantity } from '../nutrition/units';
 import { makeId, round1 } from '../util';
@@ -268,7 +269,7 @@ export function quickAdds(
       id: tpl.id,
       label: tpl.label,
       emoji: tpl.items[0]?.emoji ?? '🍽️',
-      subtitle: `${tpl.items.length} items · ~${Math.round(tpl.items.reduce((s, i) => s + i.nutrition.kcal, 0))} kcal`,
+      subtitle: `${tpl.items.length} items · ${approxKcal(tpl.items.reduce((s, i) => s + i.nutrition.kcal, 0))} kcal`,
     }));
   const f = memories
     .filter((m) => m.count >= 2)

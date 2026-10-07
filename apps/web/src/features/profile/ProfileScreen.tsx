@@ -227,6 +227,7 @@ export default function ProfileScreen() {
   const [deleting, setDeleting] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [busy, setBusy] = useState(false);
+  const [leavingGuest, setLeavingGuest] = useState(false);
   const guest = user?.isAnonymous;
 
   return (
@@ -243,7 +244,7 @@ export default function ProfileScreen() {
           <p className="text-[15px] font-extrabold text-primary-ink">
             You’re using Crumb as a guest
           </p>
-          <p className="mt-0.5 text-[14px] font-semibold text-primary-ink/90">
+          <p className="mt-0.5 text-[14px] font-semibold text-primary-ink">
             Sign in with Google to keep your journal safe and use it on other devices. Nothing gets
             lost.
           </p>
@@ -340,7 +341,7 @@ export default function ProfileScreen() {
         variant="ghost"
         block
         icon={<LogOut className="size-5" />}
-        onClick={() => void signOut()}
+        onClick={() => (guest ? setLeavingGuest(true) : void signOut())}
       >
         Sign out
       </Button>
@@ -356,6 +357,37 @@ export default function ProfileScreen() {
             toast({ message: 'Targets updated' });
           }}
         />
+      </Sheet>
+
+      <Sheet
+        open={leavingGuest}
+        onOpenChange={setLeavingGuest}
+        title="Sign out of the guest account?"
+        description="Guest journals live only in this account. Once you sign out, it can’t be opened again."
+        footer={
+          <div className="space-y-2">
+            <Button
+              size="lg"
+              block
+              onClick={async () => {
+                setLeavingGuest(false);
+                try {
+                  await linkGoogle();
+                  toast({ message: 'Account saved with Google' });
+                } catch {
+                  toast({ message: 'Couldn’t link that Google account.', tone: 'warning' });
+                }
+              }}
+            >
+              Save with Google first
+            </Button>
+            <Button variant="ghost" size="lg" block onClick={() => void signOut()}>
+              Sign out anyway
+            </Button>
+          </div>
+        }
+      >
+        {null}
       </Sheet>
 
       <Sheet
