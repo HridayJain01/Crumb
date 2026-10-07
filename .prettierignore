@@ -1,0 +1,5 @@
+pnpm-lock.yaml
+dist
+.deploy
+coverage
+docs/PLAN.md

@@ -1,0 +1,44 @@
+{
+  "name": "crumb",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n emu,api,web -c gray,blue,magenta \"pnpm emulators\" \"pnpm --filter @crumb/api dev\" \"pnpm --filter @crumb/web dev\"",
+    "emulators": "firebase emulators:start --only auth,firestore --project demo-crumb",
+    "build": "pnpm -r --filter ./apps/* build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "pnpm -r --filter ./packages/* --filter ./apps/* test",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-crumb \"pnpm --filter @crumb/rules-tests test\"",
+    "test:e2e": "pnpm --filter @crumb/e2e test",
+    "ai:eval": "tsx scripts/ai-eval.ts",
+    "foods:lookup": "tsx scripts/foods-lookup.ts",
+    "seed:demo": "tsx scripts/seed-demo.ts",
+    "deploy:api": "bash scripts/deploy-api.sh",
+    "deploy:web": "pnpm --filter @crumb/web build && firebase deploy --only hosting,firestore"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.0.0",
+    "concurrently": "^10.0.5",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "firebase-tools": "^15.32.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

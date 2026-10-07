@@ -1,0 +1,22 @@
+{
+  "name": "@crumb/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Pure, deterministic engines shared by the Crumb web app and API: schemas, nutrition, targets, energy, rules.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./foods": "./src/nutrition/foods.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "fuse.js": "^7.5.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.3"
+  }
+}

@@ -1,0 +1,26 @@
+node_modules/
+dist/
+.deploy/
+coverage/
+*.log
+.DS_Store
+
+# Local env and secrets — never commit
+.env
+.env.local
+.env.*.local
+apps/api/.env
+apps/web/.env.local
+service-account*.json
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+.firebaserc.local
+
+# Test output
+test-results/
+playwright-report/
+tests/e2e/.auth/
