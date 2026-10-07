@@ -1,0 +1,17 @@
+# Files not uploaded by `gcloud run deploy --source .` (the API needs only core + api).
+.gcloudignore
+.git
+.gitignore
+**/node_modules/
+**/dist/
+**/dev-dist/
+**/coverage/
+.firebase/
+apps/web/
+tests/
+docs/
+**/.env
+**/.env.*
+*.log
+test-results/
+playwright-report/

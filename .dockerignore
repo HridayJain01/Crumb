@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/dev-dist
+**/.deploy
+**/coverage
+.git
+.firebase
+apps/web
+tests
+docs
+**/.env
+**/.env.*
+**/*.log
+test-results
+playwright-report
