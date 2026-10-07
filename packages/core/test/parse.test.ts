@@ -74,12 +74,53 @@ describe('parseMealText (offline parser)', () => {
   });
 
   it('returns unknown foods with low identification instead of guessing', () => {
-    const r = parseMealText('two blorptastic zzzquux', db);
-    expect(r.meals[0]!.items.some((i) => i.identification === 'low')).toBe(true);
+    const r = parseMealText('2 rotis and blorptastic zzzquux', db);
+    expect(r.meals[0]!.items.map((i) => i.identification)).toEqual(['high', 'low']);
   });
 
-  it('reports not_food for empty input', () => {
+  it('reports not_food when nothing is recognisable, or the input is empty', () => {
     expect(parseMealText('   ', db).status).toBe('not_food');
+    const r = parseMealText('my laptop charger', db);
+    expect(r).toMatchObject({ status: 'not_food', meals: [] });
+  });
+
+  it('treats "less oil" as how the dish was cooked, not as an extra item', () => {
+    const r = parseMealText('2 rotis + dal + salad, less oil', db);
+    expect(ids(r.meals[0]!.items)).toEqual(['roti', 'dal', 'salad']);
+    expect(r.meals[0]!.items.every((i) => i.oilLevel === 'light')).toBe(true);
+    expect(parseMealText('aloo sabzi without oil', db).meals[0]!.items[0]!.oilLevel).toBe('none');
+    expect(parseMealText('very oily chole', db).meals[0]!.items[0]!.oilLevel).toBe('heavy');
+  });
+
+  it('ignores meals that were skipped', () => {
+    const r = parseMealText('I skipped lunch, just had a cold coffee', db);
+    expect(ids(r.meals.flatMap((m) => m.items))).toEqual(['cold_coffee']);
+  });
+
+  it('splits several meals named inside one sentence, cue first or cue last', () => {
+    const first = parseMealText(
+      'for breakfast upma, for lunch dal rice and for dinner 2 rotis with paneer bhurji',
+      db,
+    );
+    expect(first.meals.map((m) => m.mealType)).toEqual(['breakfast', 'lunch', 'dinner']);
+    expect(ids(first.meals[2]!.items)).toEqual(['roti', 'paneer_bhurji']);
+    const last = parseMealText('had poha in the morning and khichdi at night', db);
+    expect(last.meals.map((m) => [m.mealType, ids(m.items)])).toEqual([
+      ['breakfast', ['poha']],
+      ['dinner', ['khichdi']],
+    ]);
+  });
+
+  it('keeps side dishes as their own foods', () => {
+    expect(ids(parseMealText('kadhi chawal', db).meals[0]!.items)).toEqual(['kadhi', 'white_rice']);
+    expect(ids(parseMealText('lemon rice and papad', db).meals[0]!.items)).toEqual([
+      'lemon_rice',
+      'papad',
+    ]);
+    expect(ids(parseMealText('samosa with green chutney', db).meals[0]!.items)).toEqual([
+      'samosa',
+      'green_chutney',
+    ]);
   });
 });
 

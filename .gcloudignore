@@ -15,3 +15,6 @@ docs/
 *.log
 test-results/
 playwright-report/
+.github/
+scripts/
+*.md

@@ -1,0 +1,498 @@
+[
+  {
+    "id": "roti-dal",
+    "text": "2 rotis, aloo sabzi and a bowl of dal",
+    "expect": [
+      {
+        "food": "roti",
+        "grams": 80
+      },
+      {
+        "food": "aloo_sabzi"
+      },
+      {
+        "food": "dal"
+      }
+    ]
+  },
+  {
+    "id": "milk-bananas",
+    "text": "a glass of milk and two bananas",
+    "expect": [
+      {
+        "any": ["milk_toned", "milk_full", "milk_skim"]
+      },
+      {
+        "food": "banana"
+      }
+    ]
+  },
+  {
+    "id": "poha-tea",
+    "text": "poha with tea around 9am",
+    "expect": [
+      {
+        "food": "poha"
+      },
+      {
+        "food": "chai"
+      }
+    ]
+  },
+  {
+    "id": "biryani-half",
+    "text": "chicken biryani, half plate",
+    "expect": [
+      {
+        "food": "chicken_biryani"
+      }
+    ]
+  },
+  {
+    "id": "idli-sambar",
+    "text": "3 idlis with sambar and coconut chutney",
+    "expect": [
+      {
+        "food": "idli",
+        "grams": 120
+      },
+      {
+        "food": "sambar"
+      },
+      {
+        "food": "coconut_chutney"
+      }
+    ]
+  },
+  {
+    "id": "dosa-coffee",
+    "text": "masala dosa and filter coffee",
+    "expect": [
+      {
+        "food": "masala_dosa"
+      },
+      {
+        "food": "coffee_milk"
+      }
+    ]
+  },
+  {
+    "id": "pbm-naan",
+    "text": "paneer butter masala with 2 butter naan",
+    "expect": [
+      {
+        "food": "paneer_butter_masala"
+      },
+      {
+        "food": "naan"
+      }
+    ]
+  },
+  {
+    "id": "rajma-chawal",
+    "text": "rajma chawal",
+    "expect": [
+      {
+        "food": "rajma"
+      },
+      {
+        "any": ["white_rice", "jeera_rice"]
+      }
+    ]
+  },
+  {
+    "id": "chole-bhature",
+    "text": "chole bhature",
+    "expect": [
+      {
+        "food": "chole"
+      },
+      {
+        "food": "bhatura"
+      }
+    ]
+  },
+  {
+    "id": "oats-banana",
+    "text": "one bowl of oats with milk and a banana",
+    "expect": [
+      {
+        "any": ["oats_porridge", "oats"]
+      },
+      {
+        "food": "banana"
+      }
+    ]
+  },
+  {
+    "id": "eggs-toast",
+    "text": "2 boiled eggs and brown bread toast, 2 slices",
+    "expect": [
+      {
+        "food": "boiled_egg"
+      },
+      {
+        "food": "bread_brown"
+      }
+    ]
+  },
+  {
+    "id": "omelette-coffee",
+    "text": "omelette with 2 eggs and a cup of black coffee",
+    "expect": [
+      {
+        "food": "omelette"
+      },
+      {
+        "food": "black_coffee"
+      }
+    ]
+  },
+  {
+    "id": "pav-bhaji",
+    "text": "a plate of pav bhaji",
+    "expect": [
+      {
+        "food": "pav_bhaji"
+      }
+    ]
+  },
+  {
+    "id": "vada-pav",
+    "text": "vada pav and cutting chai",
+    "expect": [
+      {
+        "food": "vada_pav"
+      },
+      {
+        "food": "chai"
+      }
+    ]
+  },
+  {
+    "id": "samosa",
+    "text": "samosa with green chutney",
+    "expect": [
+      {
+        "food": "samosa"
+      },
+      {
+        "food": "green_chutney"
+      }
+    ]
+  },
+  {
+    "id": "khichdi",
+    "text": "khichdi with curd",
+    "expect": [
+      {
+        "food": "khichdi"
+      },
+      {
+        "food": "curd"
+      }
+    ]
+  },
+  {
+    "id": "curd-rice",
+    "text": "a bowl of curd rice",
+    "expect": [
+      {
+        "food": "curd_rice"
+      }
+    ]
+  },
+  {
+    "id": "lemon-rice",
+    "text": "lemon rice and papad",
+    "expect": [
+      {
+        "food": "lemon_rice"
+      },
+      {
+        "food": "papad"
+      }
+    ]
+  },
+  {
+    "id": "chapati-bhindi",
+    "text": "4 chapatis with bhindi sabzi",
+    "expect": [
+      {
+        "food": "roti",
+        "grams": 160
+      },
+      {
+        "food": "bhindi"
+      }
+    ]
+  },
+  {
+    "id": "palak-paneer",
+    "text": "palak paneer, jeera rice and raita",
+    "expect": [
+      {
+        "food": "palak_paneer"
+      },
+      {
+        "food": "jeera_rice"
+      },
+      {
+        "food": "raita"
+      }
+    ]
+  },
+  {
+    "id": "shake",
+    "text": "a protein shake with one scoop whey and milk",
+    "expect": [
+      {
+        "any": ["whey", "protein_shake"]
+      }
+    ]
+  },
+  {
+    "id": "almonds-apple",
+    "text": "handful of almonds and an apple",
+    "expect": [
+      {
+        "food": "almonds"
+      },
+      {
+        "food": "apple"
+      }
+    ]
+  },
+  {
+    "id": "three-meals",
+    "text": "for breakfast upma, for lunch dal rice and for dinner 2 rotis with paneer bhurji",
+    "expect": [
+      {
+        "food": "upma"
+      },
+      {
+        "food": "dal"
+      },
+      {
+        "food": "white_rice"
+      },
+      {
+        "food": "roti",
+        "grams": 80
+      },
+      {
+        "food": "paneer_bhurji"
+      }
+    ],
+    "meals": 3
+  },
+  {
+    "id": "chicken-curry",
+    "text": "chicken curry with 2 rotis",
+    "expect": [
+      {
+        "food": "chicken_curry"
+      },
+      {
+        "food": "roti",
+        "grams": 80
+      }
+    ]
+  },
+  {
+    "id": "butter-chicken",
+    "text": "butter chicken and naan",
+    "expect": [
+      {
+        "food": "butter_chicken"
+      },
+      {
+        "food": "naan"
+      }
+    ]
+  },
+  {
+    "id": "fish-curry",
+    "text": "fish curry rice",
+    "expect": [
+      {
+        "food": "fish_curry"
+      },
+      {
+        "food": "white_rice"
+      }
+    ]
+  },
+  {
+    "id": "egg-curry",
+    "text": "egg curry and rice",
+    "expect": [
+      {
+        "food": "egg_curry"
+      },
+      {
+        "food": "white_rice"
+      }
+    ]
+  },
+  {
+    "id": "pizza-coke",
+    "text": "3 slices of pizza and a coke",
+    "expect": [
+      {
+        "food": "pizza"
+      },
+      {
+        "food": "soft_drink"
+      }
+    ]
+  },
+  {
+    "id": "burger-fries",
+    "text": "a burger with french fries",
+    "expect": [
+      {
+        "food": "burger"
+      },
+      {
+        "food": "french_fries"
+      }
+    ]
+  },
+  {
+    "id": "noodles",
+    "text": "veg hakka noodles, 1 plate",
+    "expect": [
+      {
+        "food": "hakka_noodles"
+      }
+    ]
+  },
+  {
+    "id": "maggi",
+    "text": "maggi",
+    "expect": [
+      {
+        "food": "instant_noodles"
+      }
+    ]
+  },
+  {
+    "id": "gulab-jamun",
+    "text": "2 gulab jamun",
+    "expect": [
+      {
+        "food": "gulab_jamun"
+      }
+    ]
+  },
+  {
+    "id": "sprouts",
+    "text": "sprouts salad bowl",
+    "expect": [
+      {
+        "food": "sprouts"
+      }
+    ]
+  },
+  {
+    "id": "aloo-paratha",
+    "text": "aloo paratha with butter and curd",
+    "expect": [
+      {
+        "food": "aloo_paratha"
+      },
+      {
+        "food": "butter"
+      },
+      {
+        "food": "curd"
+      }
+    ]
+  },
+  {
+    "id": "lassi",
+    "text": "a mango lassi",
+    "expect": [
+      {
+        "food": "lassi"
+      }
+    ]
+  },
+  {
+    "id": "post-workout",
+    "text": "coconut water and a banana after workout",
+    "expect": [
+      {
+        "food": "coconut_water"
+      },
+      {
+        "food": "banana"
+      }
+    ]
+  },
+  {
+    "id": "dhokla",
+    "text": "dhokla 4 pieces",
+    "expect": [
+      {
+        "food": "dhokla"
+      }
+    ]
+  },
+  {
+    "id": "kadhi-chawal",
+    "text": "kadhi chawal",
+    "expect": [
+      {
+        "food": "kadhi"
+      },
+      {
+        "food": "white_rice"
+      }
+    ]
+  },
+  {
+    "id": "less-oil",
+    "text": "2 rotis + dal + salad, less oil",
+    "expect": [
+      {
+        "food": "roti",
+        "grams": 80
+      },
+      {
+        "food": "dal"
+      },
+      {
+        "food": "salad"
+      }
+    ]
+  },
+  {
+    "id": "cold-coffee",
+    "text": "I skipped lunch, just had a cold coffee",
+    "expect": [
+      {
+        "food": "cold_coffee"
+      }
+    ]
+  },
+  {
+    "id": "hinglish",
+    "text": "aaj nashte mein do paratha aur ek glass doodh",
+    "expect": [
+      {
+        "any": ["paratha", "aloo_paratha"]
+      },
+      {
+        "any": ["milk_toned", "milk_full"]
+      }
+    ]
+  },
+  {
+    "id": "not-food",
+    "text": "my laptop charger",
+    "expect": [],
+    "status": "not_food"
+  }
+]

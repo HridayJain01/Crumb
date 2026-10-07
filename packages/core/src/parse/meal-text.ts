@@ -1,5 +1,5 @@
 import type { AiFoodItem, AiMealInterpretation } from '../schemas/ai';
-import type { MealType, Unit } from '../schemas/common';
+import type { MealType, OilLevel, Unit } from '../schemas/common';
 import { capitalize } from '../util';
 import type { FoodDb, FoodDef } from '../nutrition/types';
 import { UNIT_ALIASES } from '../nutrition/units';
@@ -48,6 +48,27 @@ const MEAL_CUES: [MealType, RegExp][] = [
 
 const TIME = /\b(at\s+)?\d{1,2}(:\d{2})?\s*(am|pm)\b|\bat\s+\d{1,2}(:\d{2})?\b/g;
 
+/** Words that start a new meal inside one sentence ("for lunch …, for dinner …"). */
+const CUE =
+  /\b(?:for|at|in the|during|this)?\s*(?:breakfast|lunch|dinner|supper|snacks?|nashta|morning|afternoon|evening|night|tonight)\b/g;
+
+/** How oily it was is a property of the dish, not an extra "oil" item. */
+const OIL_HINTS: [OilLevel, RegExp][] = [
+  ['none', /\b(?:no|without|zero)\s+(?:oil|ghee)\b|\boil[- ]?free\b/g],
+  [
+    'light',
+    /\b(?:less|low|little|light|minimal|very little|not much)\s+(?:oil|ghee)\b|\bnot (?:too |very )?oily\b/g,
+  ],
+  [
+    'heavy',
+    /\b(?:extra|lots of|a lot of|too much)\s+oil\b|\b(?:very |too )?oily\b|\bdeep[- ]fried\b/g,
+  ],
+];
+
+/** Phrases about meals that did not happen ("I skipped lunch"). */
+const SKIPPED =
+  /\b(?:skipped|skipping|skip|didn'?t (?:eat|have)|did not (?:eat|have)|no (?:breakfast|lunch|dinner|snacks?))\b/;
+
 const FILLER =
   /\b(i've|i have|i|had|have|having|ate|eaten|drank|for|this|in the|today|yesterday|morning|afternoon|evening|night|tonight|breakfast|lunch|dinner|supper|snacks?|then|also|just|some|my|of|lots?|bit)\b/g;
 
@@ -57,6 +78,42 @@ const JOINERS = / (with|and|&) /;
 function detectMealType(sentence: string): MealType | null {
   for (const [type, re] of MEAL_CUES) if (re.test(sentence)) return type;
   return null;
+}
+
+/** Removes oil phrases and returns the oil level they describe. */
+function extractOil(text: string): { text: string; oil: OilLevel | null } {
+  let oil: OilLevel | null = null;
+  let out = text;
+  for (const [level, re] of OIL_HINTS) {
+    if (out.match(re)) {
+      oil ??= level;
+      out = out.replace(re, ' ');
+    }
+  }
+  return { text: out, oil };
+}
+
+/**
+ * Splits a sentence that mentions several meals. Cues before the food ("for lunch dal
+ * rice") start a new chunk; cues after it ("dal rice for lunch") end one.
+ */
+function splitByMealCues(sentence: string): string[] {
+  const cues = [...sentence.matchAll(CUE)].filter((m) => m[0].trim());
+  if (cues.length <= 1) return [sentence];
+  const lead = sentence
+    .slice(0, cues[0]!.index)
+    .replace(FILLER, ' ')
+    .replace(/[\s,]+/g, '');
+  const cuesFirst = lead === '';
+  const cuts = cues.map((m) => (cuesFirst ? m.index! : m.index! + m[0].length));
+  const chunks: string[] = [];
+  let from = 0;
+  for (const cut of cuesFirst ? cuts.slice(1) : cuts.slice(0, -1)) {
+    chunks.push(sentence.slice(from, cut));
+    from = cut;
+  }
+  chunks.push(sentence.slice(from));
+  return chunks.map((c) => c.trim()).filter(Boolean);
 }
 
 function parseNumberToken(token: string): number | null {
@@ -238,18 +295,22 @@ export function parseMealText(
   const meals = new Map<MealType | 'none', AiFoodItem[]>();
   let current: MealType | null = opts.defaultMealType ?? null;
   for (const sentence of sentences) {
-    current = detectMealType(sentence) ?? current;
-    const key = current ?? 'none';
-    const phrases = protectJoinedAliases(sentence, db)
-      .split(SEPARATORS)
-      .map((p) => p.replace(/_/g, ' ').trim())
-      .filter(Boolean);
-    for (const phrase of phrases) {
-      const items = parsePhrase(phrase, db);
-      if (!items.length) continue;
-      const list = meals.get(key) ?? [];
-      list.push(...items);
-      meals.set(key, list);
+    for (const chunk of splitByMealCues(sentence)) {
+      current = detectMealType(chunk) ?? current;
+      const key = current ?? 'none';
+      const { text: withoutOil, oil } = extractOil(chunk);
+      const phrases = protectJoinedAliases(withoutOil, db)
+        .split(SEPARATORS)
+        .map((p) => p.replace(/_/g, ' ').trim())
+        .filter((p) => p && !SKIPPED.test(p));
+      for (const phrase of phrases) {
+        const items = parsePhrase(phrase, db);
+        if (!items.length) continue;
+        if (oil) for (const item of items) item.oilLevel = oil;
+        const list = meals.get(key) ?? [];
+        list.push(...items);
+        meals.set(key, list);
+      }
     }
   }
 
@@ -259,11 +320,13 @@ export function parseMealText(
       items: items.slice(0, 20),
     }))
     .filter((m) => m.items.length);
+  // Nothing recognisable at all ("my laptop charger"): ask, rather than invent a food.
+  const recognised = out.some((m) => m.items.some((i) => i.identification !== 'low'));
 
   return {
-    status: out.length ? 'ok' : 'not_food',
+    status: recognised ? 'ok' : 'not_food',
     imageIssue: null,
-    meals: out.slice(0, 4),
+    meals: recognised ? out.slice(0, 4) : [],
     clarifyingQuestion: null,
   };
 }
