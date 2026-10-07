@@ -3,12 +3,17 @@ import { defineConfig, devices } from '@playwright/test';
 /*
  * End-to-end tests run the real PWA against the Firebase emulators and the API in mock mode
  * (no cloud, no AI credits). `pnpm test:e2e` starts the emulators; Playwright starts the
- * API and web dev servers, or reuses ones already running locally.
+ * API and the web app, or reuses ones already running locally. CI tests the production
+ * bundle (code-split chunks, service worker), built with the emulator config; locally the
+ * Vite dev server keeps the loop fast.
  */
 
 const WEB_URL = 'http://127.0.0.1:5173';
 const API_URL = 'http://127.0.0.1:8787';
 const ci = Boolean(process.env.CI);
+const web = ci
+  ? 'pnpm --filter @crumb/web build --mode development && pnpm --filter @crumb/web preview --host 127.0.0.1 --port 5173 --strictPort'
+  : 'pnpm --filter @crumb/web dev --host 127.0.0.1 --port 5173 --strictPort';
 
 export default defineConfig({
   testDir: './specs',
@@ -37,11 +42,11 @@ export default defineConfig({
       timeout: 60_000,
     },
     {
-      command: 'pnpm --filter @crumb/web dev --host 127.0.0.1 --port 5173 --strictPort',
+      command: web,
       cwd: '../..',
       url: WEB_URL,
       reuseExistingServer: !ci,
-      timeout: 60_000,
+      timeout: 120_000,
     },
   ],
 });
