@@ -44,7 +44,9 @@ export function ItemRow({
   useEffect(() => {
     void loadFoodDb().then(setDb);
   }, []);
-  useEffect(() => setGrams(String(Math.round(item.grams))), [item.grams]);
+  useEffect(() => {
+    setGrams(String(Math.round(item.grams)));
+  }, [item.grams]);
 
   const isWeight = item.unit === 'g' || item.unit === 'ml';
   const kcal = item.nutrition.kcal;

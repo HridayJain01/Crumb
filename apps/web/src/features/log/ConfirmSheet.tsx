@@ -49,7 +49,9 @@ export function ConfirmSheet({
 }) {
   const [drafts, setDrafts] = useState<MealDraft[]>(state.drafts);
   const [adding, setAdding] = useState<number | null>(null);
-  useEffect(() => setDrafts(state.drafts), [state.drafts]);
+  useEffect(() => {
+    setDrafts(state.drafts);
+  }, [state.drafts]);
 
   const all = useMemo(() => drafts.flatMap((d) => d.items), [drafts]);
   const totals = useMemo(() => sumItems(all), [all]);

@@ -27,7 +27,11 @@ const TABS = [
 export function AppShell() {
   const online = useOnline();
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo({ top: 0 }), [pathname]);
+  // Block body on purpose: newer browsers return a Promise from scrollTo(), and an effect
+  // must return nothing or a cleanup function.
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [pathname]);
 
   return (
     <div className="mx-auto min-h-dvh max-w-lg pb-28">
