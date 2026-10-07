@@ -21,7 +21,7 @@ import {
   type Intensity,
   type WorkoutType,
 } from '@crumb/core';
-import { db } from '../lib/firebase';
+import { db } from '../lib/db';
 import { deviceTimeZone } from '../lib/time';
 import { queries, refs } from './hooks';
 

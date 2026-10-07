@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "sideEffects": false,
   "description": "Pure, deterministic engines shared by the Crumb web app and API: schemas, nutrition, targets, energy, rules.",
   "exports": {
     ".": "./src/index.ts",

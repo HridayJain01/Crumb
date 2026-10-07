@@ -4,7 +4,8 @@ import { registerSW } from 'virtual:pwa-register';
 import { App } from './app/App';
 import './styles/index.css';
 
-registerSW({ immediate: true });
+// Registered after the page's load event, so precaching never competes with the first paint.
+registerSW();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

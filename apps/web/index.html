@@ -16,7 +16,40 @@
     <title>Crumb</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Painted before any JavaScript runs; React replaces it on start. Keep it in sync with
+           the welcome hero (same classes) so the swap is seamless. -->
+      <div
+        class="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center px-6 text-center"
+      >
+        <svg width="128" height="128" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <circle cx="50" cy="52" r="36" fill="#E2A052" />
+          <circle cx="50" cy="52" r="33" fill="#F6C177" />
+          <circle cx="76" cy="26" r="12" fill="#FFF8F1" />
+          <circle cx="84" cy="40" r="7" fill="#FFF8F1" />
+          <circle cx="30" cy="40" r="3" fill="#6B3E26" />
+          <circle cx="62" cy="78" r="2.6" fill="#6B3E26" />
+          <circle cx="28" cy="66" r="2.4" fill="#6B3E26" />
+          <circle cx="41" cy="50" r="3.6" fill="#2A1E17" />
+          <circle cx="59" cy="50" r="3.6" fill="#2A1E17" />
+          <circle cx="42.2" cy="48.8" r="1.1" fill="#fff" />
+          <circle cx="60.2" cy="48.8" r="1.1" fill="#fff" />
+          <circle cx="35" cy="59" r="4" fill="#F28B6B" opacity="0.55" />
+          <circle cx="65" cy="59" r="4" fill="#F28B6B" opacity="0.55" />
+          <path
+            d="M40 66 Q50 75 60 66"
+            stroke="#2A1E17"
+            stroke-width="2.8"
+            fill="none"
+            stroke-linecap="round"
+          />
+        </svg>
+        <h1 class="mt-4 text-4xl font-black tracking-tight">Crumb</h1>
+        <p class="mt-2 max-w-xs text-lg font-bold text-muted">
+          Show us what you eat. We’ll turn it into a picture of your day.
+        </p>
+      </div>
+    </div>
     <noscript>Crumb needs JavaScript to run.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

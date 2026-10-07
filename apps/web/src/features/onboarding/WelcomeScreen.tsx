@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Camera, Compass, Sparkles } from 'lucide-react';
 import { useAuth } from '../../auth/AuthProvider';
@@ -6,6 +6,7 @@ import { Button } from '../../components/ui/Button';
 import { Mascot } from '../../components/ui/Mascot';
 import { useToast } from '../../components/ui/Toast';
 import { auth, usingEmulators } from '../../lib/firebase';
+import { prefetchSignedIn } from '../../app/lazy';
 import { DISCLAIMER } from '@crumb/core';
 
 const POINTS = [
@@ -30,6 +31,13 @@ export function WelcomeScreen() {
   const { signInWithGoogle, continueAsGuest } = useAuth();
   const toast = useToast();
   const [busy, setBusy] = useState<'google' | 'guest' | 'sample' | null>(null);
+
+  // The screens behind sign-in download once this screen is up (or as soon as a sign-in
+  // button is touched), so they never slow the first paint and are ready after sign-in.
+  useEffect(() => {
+    const timer = window.setTimeout(prefetchSignedIn, 2500);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   async function run(kind: 'google' | 'guest' | 'sample') {
     setBusy(kind);
@@ -76,7 +84,11 @@ export function WelcomeScreen() {
           ))}
         </ul>
       </div>
-      <div className="mt-8 space-y-3">
+      <div
+        className="mt-8 space-y-3"
+        onPointerDown={prefetchSignedIn}
+        onFocusCapture={prefetchSignedIn}
+      >
         <Button
           size="lg"
           block

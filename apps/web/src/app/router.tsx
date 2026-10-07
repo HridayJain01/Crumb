@@ -1,44 +1,39 @@
-import { lazy, Suspense } from 'react';
-import { createBrowserRouter, Navigate, Outlet } from 'react-router';
+import { lazy, Suspense, type ReactNode } from 'react';
+import { createBrowserRouter, Navigate } from 'react-router';
 import { useAuth } from '../auth/AuthProvider';
-import { UserProvider, useUser } from '../data/user';
 import { LoadingScreen } from '../components/ui/States';
-import { AppShell } from './AppShell';
 import { WelcomeScreen } from '../features/onboarding/WelcomeScreen';
-import { OnboardingScreen } from '../features/onboarding/OnboardingScreen';
-import { HomeScreen } from '../features/home/HomeScreen';
-import { LogScreen } from '../features/log/LogScreen';
+import { loadSignedIn } from './lazy';
 
+// One chunk for everything behind sign-in; Insights and Profile are chunks of their own.
+const UserRoot = lazy(() => loadSignedIn().then((m) => ({ default: m.UserRoot })));
+const RequireProfile = lazy(() => loadSignedIn().then((m) => ({ default: m.RequireProfile })));
+const OnboardingScreen = lazy(() => loadSignedIn().then((m) => ({ default: m.OnboardingScreen })));
+const HomeScreen = lazy(() => loadSignedIn().then((m) => ({ default: m.HomeScreen })));
+const LogScreen = lazy(() => loadSignedIn().then((m) => ({ default: m.LogScreen })));
 const InsightsScreen = lazy(() => import('../features/insights/InsightsScreen'));
 const ProfileScreen = lazy(() => import('../features/profile/ProfileScreen'));
+
+function Lazy({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<LoadingScreen />}>{children}</Suspense>;
+}
 
 function RequireAuth() {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
   if (!user) return <Navigate to="/welcome" replace />;
   return (
-    <UserProvider>
-      <Outlet />
-    </UserProvider>
+    <Lazy>
+      <UserRoot />
+    </Lazy>
   );
 }
 
-function RequireProfile() {
-  const { loading, profile, targets } = useUser();
-  if (loading) return <LoadingScreen />;
-  if (!profile || !targets) return <Navigate to="/onboarding" replace />;
-  return <AppShell />;
-}
-
-function PublicOnly({ children }: { children: React.ReactNode }) {
+function PublicOnly({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
   if (user) return <Navigate to="/" replace />;
   return <>{children}</>;
-}
-
-function Lazy({ children }: { children: React.ReactNode }) {
-  return <Suspense fallback={<LoadingScreen />}>{children}</Suspense>;
 }
 
 export const router = createBrowserRouter([
@@ -53,12 +48,37 @@ export const router = createBrowserRouter([
   {
     element: <RequireAuth />,
     children: [
-      { path: '/onboarding', element: <OnboardingScreen /> },
       {
-        element: <RequireProfile />,
+        path: '/onboarding',
+        element: (
+          <Lazy>
+            <OnboardingScreen />
+          </Lazy>
+        ),
+      },
+      {
+        element: (
+          <Lazy>
+            <RequireProfile />
+          </Lazy>
+        ),
         children: [
-          { index: true, element: <HomeScreen /> },
-          { path: 'log', element: <LogScreen /> },
+          {
+            index: true,
+            element: (
+              <Lazy>
+                <HomeScreen />
+              </Lazy>
+            ),
+          },
+          {
+            path: 'log',
+            element: (
+              <Lazy>
+                <LogScreen />
+              </Lazy>
+            ),
+          },
           {
             path: 'insights',
             element: (

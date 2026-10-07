@@ -290,7 +290,7 @@ All endpoints take a Firebase ID token and use Zod schemas from `@crumb/core` on
 - vite-plugin-pwa with `generateSW` precaches the app shell, the font and the lazy-loaded `foods.json`. `/api` calls always go to the network. The manifest includes maskable icons and shortcuts.
 - Camera: `<input type=file accept="image/*" capture="environment">`.
 - Images are compressed with canvas: 1024 px for the AI, a 192 px thumbnail for the timeline.
-- Budgets: initial JS at most 250 KB gzipped (**actual: ~375 KB**, see §19), LCP under 2.5 s on 4G, Lighthouse 90+ for performance, PWA and accessibility. Screens are code-split, and charts and the walk planner load lazily.
+- Budgets: initial JS at most 250 KB gzipped (**met: ~135 KB**, see §19), LCP under 2.5 s on 4G, Lighthouse 90+ for performance, PWA and accessibility. Screens are code-split, and charts and the walk planner load lazily.
 
 ## 12. Security, privacy, safety
 
@@ -413,7 +413,7 @@ Honest differences between this plan and what was built, and why.
 
 | Plan | Built | Why |
 |---|---|---|
-| Initial JS ≤ 250 KB gzipped | **~375 KB** gzipped: Firebase Auth + Firestore 181 KB, React + router 97 KB, other libraries 52 KB, app 44 KB; CSS 7 KB. Insights, Profile and the food table (with Fuse.js) load lazily; the service worker precaches everything after the first visit. | The Firestore SDK with its offline cache is what makes logging instant and offline-proof; it can't be lazy because the first screen reads from it. A Lite SDK would drop the offline queue. |
+| Initial JS ≤ 250 KB gzipped | **~135 KB** gzipped for the first screen (React + router 97 KB, app + Firebase Auth 38 KB) plus a static splash in `index.html` that paints before any JavaScript. Firestore, the data layer and the signed-in screens (~225 KB) are one lazy chunk, fetched once the welcome screen is up or the moment a sign-in button is touched; Insights, Profile and the food table are separate chunks; the service worker registers after `load` and precaches everything for repeat visits. Lighthouse (mobile, simulated slow 4G, production build): **Performance 97, Accessibility 100, Best Practices 100, SEO 100**; LCP 2.3 s, TBT 0 ms, CLS 0. | The first version shipped everything up front (~375 KB, Performance 84, LCP 3.6 s); splitting at the sign-in boundary fixed it without giving up Firestore's offline cache. |
 | Text logged offline is saved as `pending_ai` and analysed later | The **on-device parser** ("basic mode") estimates immediately, offline or when the AI is unavailable, through the same pipeline as Gemini's output. | Instant feedback beats a queue; the person can still edit everything. |
 | TanStack Query, date-fns, Hono typed client | Not used: Firestore listeners are the data layer, `fetch` + shared Zod schemas validate API responses, dates use `Intl`. | Fewer dependencies and a smaller bundle. |
 | Gemini schema from `z.toJSONSchema` | `toGeminiSchema()` emits the OpenAPI subset `responseSchema` accepts; responses are still re-validated with Zod and sanitised. | Gemini's structured-output schema is a subset of JSON Schema. |

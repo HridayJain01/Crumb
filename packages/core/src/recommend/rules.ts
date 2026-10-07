@@ -172,6 +172,8 @@ export function generateRecommendations(ctx: RecommendationContext): Recommendat
 }
 
 /** Template wording used when AI is unavailable (and as the AI's factual basis). */
+const roundTo5 = (n: number) => Math.round(n / 5) * 5;
+
 export function templateInsight(
   ctx: RecommendationContext,
   top: Recommendation | undefined,
@@ -181,12 +183,14 @@ export function templateInsight(
   let insight: string;
   if (ctx.today.mealsLogged === 0) insight = 'Nothing logged yet today.';
   else if (kcalPct > 1.1)
-    insight = `You’re a little above your calorie target today (~${Math.round(kcalPct * 100)}%).`;
+    insight = `You’re a little above your calorie target today (~${roundTo5(kcalPct * 100)}%).`;
   else if (kcalPct >= 0.85) insight = 'You’re close to your calorie target today.';
-  else insight = `You’re at about ${Math.round(kcalPct * 100)}% of your calorie target so far.`;
+  else insight = `You’re at about ${roundTo5(kcalPct * 100)}% of your calorie target so far.`;
   if (ctx.today.mealsLogged > 0) {
     insight +=
-      proteinGap > 5 ? ` Protein is ~${proteinGap} g below target.` : ' Protein is on track.';
+      proteinGap > 5
+        ? ` Protein is ~${roundTo5(proteinGap)} g below target.`
+        : ' Protein is on track.';
   }
   return { insight, action: top ? `${top.title}. ${top.text}` : 'Keep going — log as you eat.' };
 }

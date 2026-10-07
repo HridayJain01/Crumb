@@ -127,6 +127,8 @@ and deploy with `GOOGLE_HEALTH_CLIENT_ID=... pnpm deploy:api`.
 ## Notes and limits
 
 - Estimates are approximate and **not medical advice**. Targets never come from the AI.
+- Fast first load: ~135 KB of gzipped JavaScript for the first screen; Lighthouse (mobile)
+  Performance 97, Accessibility 100, Best Practices 100, SEO 100 on a production build.
 - The bundled food table (~190 foods, Indian home cooking first) is curated; add foods with
   `pnpm foods:lookup "<name>"` (USDA FoodData Central, public domain).
 - Health Connect and Apple Health have no web APIs, so a PWA can't read them; manual steps

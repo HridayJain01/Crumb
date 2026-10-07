@@ -5,20 +5,16 @@ import {
   indexedDBLocalPersistence,
   initializeAuth,
 } from 'firebase/auth';
-import {
-  connectFirestoreEmulator,
-  initializeFirestore,
-  persistentLocalCache,
-  persistentMultipleTabManager,
-} from 'firebase/firestore';
 
 /*
- * Firebase is the client data layer: Auth for identity, Firestore with a persistent local
- * cache so the app opens instantly, works offline and queues writes until it reconnects.
+ * Firebase app + Auth: the only Firebase code the first screen needs. Firestore lives in
+ * ./db and loads with the signed-in part of the app, which keeps the first paint light.
  */
 
 const env = import.meta.env;
 export const usingEmulators = env.VITE_USE_EMULATORS === 'true';
+/** Emulators are reached on whichever host serves the app (localhost or 127.0.0.1). */
+export const emulatorHost = window.location.hostname || '127.0.0.1';
 
 export const firebaseApp = initializeApp({
   apiKey: env.VITE_FIREBASE_API_KEY,
@@ -33,13 +29,6 @@ export const auth = initializeAuth(firebaseApp, {
   persistence: [indexedDBLocalPersistence, browserLocalPersistence],
 });
 
-export const db = initializeFirestore(firebaseApp, {
-  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }),
-  ignoreUndefinedProperties: true,
-});
-
 if (usingEmulators) {
-  const host = window.location.hostname || '127.0.0.1';
-  connectAuthEmulator(auth, `http://${host}:9099`, { disableWarnings: true });
-  connectFirestoreEmulator(db, host, 8080);
+  connectAuthEmulator(auth, `http://${emulatorHost}:9099`, { disableWarnings: true });
 }

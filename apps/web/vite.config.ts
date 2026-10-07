@@ -71,22 +71,19 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: true,
-    // Firebase (with offline persistence) is the bulk of the first load; it is cached by the
-    // service worker, so repeat visits start instantly even offline.
+    // Firestore (with offline persistence) is the largest chunk; it loads with the signed-in
+    // screens, and the service worker caches it, so repeat visits start instantly even offline.
     chunkSizeWarningLimit: 700,
     rolldownOptions: {
       output: {
+        // Only React gets a fixed chunk (stable, long-cached). Everything else follows the
+        // lazy-loading boundaries, so the first screen downloads just what it renders.
         advancedChunks: {
           groups: [
-            {
-              name: 'firebase',
-              test: /node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(@firebase|firebase|re2js)[\\/]/,
-            },
             {
               name: 'react',
               test: /node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(react|react-dom|scheduler|react-router)[\\/]/,
             },
-            { name: 'vendor', test: /node_modules[\\/](?!(?:\.pnpm[\\/])?fuse)/ },
           ],
         },
       },
