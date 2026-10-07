@@ -115,7 +115,8 @@ CI (`.github/workflows/ci.yml`) runs all of these except the paid model eval.
    Hosting rewrites `/api/**` to the Cloud Run service, so the app and API share one origin.
 5. **Demo day:** `MIN_INSTANCES=1 pnpm deploy:api` avoids cold starts (paid from credits);
    set it back to 0 afterwards. To show history, run
-   `pnpm seed:demo --project my-crumb --email you@gmail.com --yes` after signing in once.
+   `pnpm seed:demo --project my-crumb --email you@gmail.com --yes` after signing in once
+   (uses `gcloud auth application-default login`; the history is labelled as sample data).
 
 **Optional — Google Health sync** (needs a Fitbit or Pixel Watch): create an OAuth client
 (Web application) with redirect URI `https://<project>.web.app/api/integrations/google-health/callback`,
