@@ -24,6 +24,11 @@ import { BarChart } from './BarChart';
 import { WalkPlanner } from './WalkPlanner';
 import { WorkoutList } from './Workouts';
 
+/** Averages of typed-in step counts read better rounded: "~7,300". */
+function approxSteps(n: number): string {
+  return `~${(Math.round(n / 100) * 100).toLocaleString('en-IN')}`;
+}
+
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-2xl bg-surface-2 p-3">
@@ -100,7 +105,7 @@ export default function InsightsScreen() {
             />
             <Stat
               label="Avg steps"
-              value={stats.avgSteps ? stats.avgSteps.toLocaleString('en-IN') : '—'}
+              value={stats.avgSteps ? approxSteps(stats.avgSteps) : '—'}
               sub={stats.avgSteps ? 'on days with data' : 'add steps daily'}
             />
             <Stat
@@ -135,9 +140,7 @@ export default function InsightsScreen() {
               title="Steps per day"
               color="var(--color-teal)"
               reference={stepDays >= 2 ? stats.avgSteps : undefined}
-              referenceLabel={
-                stats.avgSteps ? `avg ${stats.avgSteps.toLocaleString('en-IN')}` : undefined
-              }
+              referenceLabel={stats.avgSteps ? `avg ${approxSteps(stats.avgSteps)}` : undefined}
               format={(v) => (v >= 1000 ? `${(v / 1000).toFixed(1)}k` : String(Math.round(v)))}
               data={chartDays.map((c) => ({
                 label: c.label,

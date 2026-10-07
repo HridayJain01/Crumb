@@ -35,10 +35,12 @@ export function Pill({
   children,
   tone = 'neutral',
   className = '',
+  title,
 }: {
   children: ReactNode;
   tone?: 'neutral' | 'success' | 'warning' | 'danger' | 'teal' | 'primary';
   className?: string;
+  title?: string;
 }) {
   const tones = {
     neutral: 'bg-surface-2 text-muted',
@@ -50,6 +52,7 @@ export function Pill({
   } as const;
   return (
     <span
+      title={title}
       className={`inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-chip px-2.5 py-1 text-[12px] font-extrabold ${tones[tone]} ${className}`}
     >
       {children}

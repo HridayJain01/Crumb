@@ -6,18 +6,27 @@ import { Pill } from '../../components/ui/Badge';
 function status(
   value: number,
   target: number,
+  today: boolean,
 ): { tone: 'success' | 'warning' | 'neutral'; label: string } {
-  if (!value) return { tone: 'neutral', label: 'Nothing yet' };
+  if (!value) return { tone: 'neutral', label: today ? 'Nothing yet' : 'Not logged' };
   const r = value / target;
   if (r > 1.15) return { tone: 'warning', label: '▲ A bit over' };
   if (r >= 0.85) return { tone: 'success', label: '✓ Close to target' };
-  return { tone: 'neutral', label: 'In progress' };
+  return { tone: 'neutral', label: today ? 'In progress' : 'Below target' };
 }
 
 /** "How am I doing today?" — calories ring + macro bars, always shown as approximate. */
-export function NutritionCard({ summary, targets }: { summary: DailySummary; targets: Targets }) {
+export function NutritionCard({
+  summary,
+  targets,
+  isToday,
+}: {
+  summary: DailySummary;
+  targets: Targets;
+  isToday: boolean;
+}) {
   const kcal = summary.intake.kcal;
-  const s = status(kcal, targets.kcal);
+  const s = status(kcal, targets.kcal, isToday);
   const remaining = Math.max(0, targets.kcal - kcal);
   return (
     <Card>
@@ -65,7 +74,7 @@ export function NutritionCard({ summary, targets }: { summary: DailySummary; tar
         <p className="mt-3 text-[13px] font-semibold text-muted">
           Range ~{formatRange(summary.intakeRange.kcal.low, summary.intakeRange.kcal.high)} kcal
           {remaining > 0
-            ? ` · about ${approxKcal(remaining).replace('~', '')} kcal of room left`
+            ? ` · about ${approxKcal(remaining).replace('~', '')} kcal ${isToday ? 'of room left' : 'below target'}`
             : ''}
         </p>
       )}

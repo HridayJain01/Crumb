@@ -4,7 +4,7 @@ import { collection, getDoc, getDocs } from 'firebase/firestore';
 import { ChevronDown, Download, LogOut, Shield, Trash2, Watch } from 'lucide-react';
 import { addDays, DISCLAIMER } from '@crumb/core';
 import { useAuth } from '../../auth/AuthProvider';
-import { saveProfile, useProfile } from '../../data/user';
+import { saveProfile, useProfile, useUser } from '../../data/user';
 import { refs, useLiveDoc } from '../../data/hooks';
 import { Card, CardHeader, SectionTitle } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -220,6 +220,7 @@ async function exportData(uid: string): Promise<void> {
 
 export default function ProfileScreen() {
   const { uid, profile, targets } = useProfile();
+  const { sampleData } = useUser();
   const { user, linkGoogle, signOut } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
@@ -307,6 +308,12 @@ export default function ProfileScreen() {
           Your journal is private to your account. Photos are analysed and discarded (only a tiny
           thumbnail is kept), and your location is used only while planning a walk.
         </p>
+        {sampleData && (
+          <p className="mt-2 rounded-2xl bg-surface-2 p-3 text-[13px] font-bold text-muted">
+            This journal includes generated sample history for demos. It is not real health data;
+            “Delete everything” removes it.
+          </p>
+        )}
         <div className="mt-3 flex flex-wrap gap-2">
           <Button
             size="sm"

@@ -15,7 +15,7 @@ import type { FoodMemory } from '../schemas/memory';
 import { capitalize, clamp, makeId, round1 } from '../util';
 import { cleanLabel, normalizeFoodName, slugify } from './normalize';
 import type { FoodDb, FoodDef, FoodMatch } from './types';
-import { formatQuantity, GENERIC_UNIT_GRAMS } from './units';
+import { formatQuantity, GENERIC_UNIT_GRAMS, naturalQuantity } from './units';
 
 /*
  * Deterministic nutrition estimation (documented in docs/estimation.md).
@@ -450,7 +450,12 @@ export function buildManualItem(
   opts: { quantity?: number; unit?: Unit; memory?: FoodMemory } = {},
 ): FoodItem {
   const unit = opts.unit ?? opts.memory?.typicalUnit ?? food.defaultUnit;
-  const quantity = opts.quantity ?? opts.memory?.typicalQuantity ?? 1;
+  // The usual amount only makes sense in the unit it was remembered in.
+  const quantity =
+    opts.quantity ??
+    (opts.memory && opts.memory.typicalUnit === unit
+      ? naturalQuantity(opts.memory.typicalQuantity, unit)
+      : 1);
   const resolved = resolveGrams({
     food,
     memory: opts.memory,
@@ -492,14 +497,15 @@ export function buildItemFromMemory(memory: FoodMemory, db?: FoodDb): FoodItem {
   const food = memory.foodId ? db?.byId.get(memory.foodId) : undefined;
   if (food) return buildManualItem(food, { memory });
   const gpu = memory.gramsPerUnit[memory.typicalUnit] ?? GENERIC_UNIT_GRAMS[memory.typicalUnit];
-  const grams = gpu * memory.typicalQuantity;
+  const quantity = naturalQuantity(memory.typicalQuantity, memory.typicalUnit);
+  const grams = gpu * quantity;
   return finalizeItem(
     {
       id: makeId('i'),
       name: memory.label,
       foodId: null,
       emoji: memory.emoji,
-      quantity: memory.typicalQuantity,
+      quantity,
       unit: memory.typicalUnit,
       grams: round1(grams),
       basis: {

@@ -58,7 +58,7 @@ export function ActivityCard({
         </button>
         <div className="rounded-2xl bg-teal-soft p-3">
           <span className="block text-[26px] font-black leading-none text-teal tabular">
-            {approxKcal(summary.activeKcal)}
+            {summary.activeKcal > 0 ? approxKcal(summary.activeKcal) : '—'}
           </span>
           <span className="mt-1 block text-[13px] font-bold text-teal">extra kcal moved</span>
         </div>

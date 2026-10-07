@@ -1,11 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { getFoodDb } from '../src/nutrition/foods';
 import {
+  buildItemFromMemory,
   buildManualItem,
   recomputeItem,
   buildItemFromAi,
   sumItems,
 } from '../src/nutrition/estimate';
+import { naturalQuantity } from '../src/nutrition/units';
 import {
   cloneTemplateItems,
   diffCorrections,
@@ -68,6 +70,22 @@ describe('food memory', () => {
     m = updateFoodMemory(m, heavyRoti, 'dinner', at, false);
     expect(m.gramsPerUnit.piece).toBe(46); // 40 × 0.7 + 60 × 0.3
     expect(m.mealTypeCounts).toEqual({ lunch: 2, dinner: 1 });
+  });
+
+  it('offers usual portions people actually serve, not raw averages', () => {
+    const at = new Date('2026-10-07T13:00:00Z');
+    const two = roti();
+    const three = recomputeItem(roti(), { quantity: 3 });
+    let m = updateFoodMemory(undefined, two, 'lunch', at, false);
+    m = updateFoodMemory(m, three, 'lunch', at, false); // EMA: 2.3 rotis
+    expect(m.typicalQuantity).toBe(2.3);
+    expect(buildItemFromMemory(m, db).quantity).toBe(2);
+    expect(quickAdds([{ ...m, count: 2 }], [], 13)[0]!.subtitle).toBe('2 pieces');
+    expect(naturalQuantity(1.3, 'katori')).toBe(1.5);
+    expect(naturalQuantity(0.6, 'bowl')).toBe(0.5);
+    expect(naturalQuantity(143, 'g')).toBe(145);
+    // A remembered amount is never applied in a different unit.
+    expect(buildManualItem(db.byId.get('roti')!, { unit: 'g', memory: m }).quantity).toBe(1);
   });
 
   it('records what the user corrected', () => {

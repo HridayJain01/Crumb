@@ -1,6 +1,6 @@
 /**
  * Minimal, accessible bar chart (hand-drawn SVG; no chart library). Each chart answers one
- * question, has a reference line (target or average) and a text alternative.
+ * question, has a reference line (target or average) with a legend, and a text alternative.
  */
 export function BarChart({
   title,
@@ -49,16 +49,6 @@ export function BarChart({
               strokeDasharray="4 4"
               strokeWidth={1.2}
             />
-            <text
-              x={2}
-              y={y(reference) - 4}
-              textAnchor="start"
-              fontSize={10}
-              fontWeight={800}
-              fill="var(--color-muted)"
-            >
-              {referenceLabel}
-            </text>
           </g>
         )}
         {data.map((d, i) => {
@@ -113,6 +103,23 @@ export function BarChart({
           );
         })}
       </svg>
+      {reference !== undefined && reference > 0 && referenceLabel && (
+        // The legend sits outside the plot so it never collides with tall bars.
+        <figcaption className="mt-1 flex items-center gap-2 text-[12px] font-bold text-muted">
+          <svg width="22" height="6" aria-hidden>
+            <line
+              x1={0}
+              x2={22}
+              y1={3}
+              y2={3}
+              stroke="var(--color-muted)"
+              strokeDasharray="4 4"
+              strokeWidth={1.5}
+            />
+          </svg>
+          {referenceLabel}
+        </figcaption>
+      )}
     </figure>
   );
 }

@@ -5,7 +5,7 @@ import type { Correction, FoodMemory, MealTemplate, MealTemplateWithId } from '.
 import { mealTypeForHour, MEAL_LABEL } from '../dates';
 import { approxKcal } from '../format';
 import { applyFatFactor, finalizeItem, memoryKeyFor } from '../nutrition/estimate';
-import { formatQuantity } from '../nutrition/units';
+import { formatQuantity, naturalQuantity } from '../nutrition/units';
 import { makeId, round1 } from '../util';
 
 /*
@@ -233,11 +233,12 @@ export function memoryHints(
     .slice(0, 15 - hints.length)
     .map((m) => {
       const gpu = m.gramsPerUnit[m.typicalUnit];
-      const grams = gpu ? ` (~${Math.round(gpu * m.typicalQuantity)} g)` : '';
+      const quantity = naturalQuantity(m.typicalQuantity, m.typicalUnit);
+      const grams = gpu ? ` (~${Math.round(gpu * quantity)} g)` : '';
       return {
         key: m.key,
         label: m.label,
-        usual: `${formatQuantity(m.typicalQuantity, m.typicalUnit)}${grams}`.slice(0, 60),
+        usual: `${formatQuantity(quantity, m.typicalUnit)}${grams}`.slice(0, 60),
       };
     });
   return [...hints, ...foods];
@@ -286,7 +287,7 @@ export function quickAdds(
       id: m.key,
       label: m.label,
       emoji: m.emoji,
-      subtitle: formatQuantity(m.typicalQuantity, m.typicalUnit),
+      subtitle: formatQuantity(naturalQuantity(m.typicalQuantity, m.typicalUnit), m.typicalUnit),
     }));
   return [...t, ...f];
 }

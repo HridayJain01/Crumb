@@ -7,7 +7,8 @@ import { refs, useLiveDoc } from './hooks';
 export interface UserDoc {
   profile?: Profile;
   targets?: Targets;
-  settings?: { onboardedAt?: string };
+  /** `sampleDataSince` marks generated demo history (scripts/seed-demo.ts). */
+  settings?: { onboardedAt?: string; sampleDataSince?: string };
   createdAt?: string;
   updatedAt?: string;
 }
@@ -17,6 +18,8 @@ interface UserState {
   loading: boolean;
   profile: Profile | undefined;
   targets: Targets | undefined;
+  /** True when the journal contains generated sample history. */
+  sampleData: boolean;
 }
 
 const UserContext = createContext<UserState | null>(null);
@@ -25,7 +28,15 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const uid = useUid();
   const { data, loading } = useLiveDoc<UserDoc>(refs.user(uid), {});
   return (
-    <UserContext.Provider value={{ uid, loading, profile: data.profile, targets: data.targets }}>
+    <UserContext.Provider
+      value={{
+        uid,
+        loading,
+        profile: data.profile,
+        targets: data.targets,
+        sampleData: Boolean(data.settings?.sampleDataSince),
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

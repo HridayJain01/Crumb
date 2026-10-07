@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Camera, Compass, Sparkles } from 'lucide-react';
 import { useAuth } from '../../auth/AuthProvider';
 import { Button } from '../../components/ui/Button';
 import { Mascot } from '../../components/ui/Mascot';
 import { useToast } from '../../components/ui/Toast';
+import { auth, usingEmulators } from '../../lib/firebase';
 import { DISCLAIMER } from '@crumb/core';
 
 const POINTS = [
@@ -27,16 +29,21 @@ const POINTS = [
 export function WelcomeScreen() {
   const { signInWithGoogle, continueAsGuest } = useAuth();
   const toast = useToast();
-  const [busy, setBusy] = useState<'google' | 'guest' | null>(null);
+  const [busy, setBusy] = useState<'google' | 'guest' | 'sample' | null>(null);
 
-  async function run(kind: 'google' | 'guest') {
+  async function run(kind: 'google' | 'guest' | 'sample') {
     setBusy(kind);
     try {
       if (kind === 'google') await signInWithGoogle();
-      else await continueAsGuest();
+      else if (kind === 'sample') {
+        // Local emulators only: the account created by `pnpm seed:demo`.
+        await signInWithEmailAndPassword(auth, 'sample@crumb.test', 'crumb-sample');
+      } else await continueAsGuest();
     } catch (err) {
       const code = (err as { code?: string }).code ?? '';
-      if (!code.includes('popup-closed') && !code.includes('cancelled-popup')) {
+      if (kind === 'sample') {
+        toast({ message: 'Run “pnpm seed:demo” first to create it.', tone: 'warning' });
+      } else if (!code.includes('popup-closed') && !code.includes('cancelled-popup')) {
         toast({ message: 'Couldn’t sign in. Please try again.', tone: 'warning' });
       }
     } finally {
@@ -89,6 +96,18 @@ export function WelcomeScreen() {
         >
           Try it first — no account
         </Button>
+        {usingEmulators && (
+          <Button
+            size="sm"
+            variant="ghost"
+            block
+            loading={busy === 'sample'}
+            disabled={busy !== null}
+            onClick={() => run('sample')}
+          >
+            Sample account (local emulators only)
+          </Button>
+        )}
         <p className="pt-2 text-center text-[12px] font-semibold text-muted">{DISCLAIMER}</p>
       </div>
     </div>

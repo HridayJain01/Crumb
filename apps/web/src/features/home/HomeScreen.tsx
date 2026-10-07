@@ -10,7 +10,7 @@ import {
   templateInsight,
   type InsightContext,
 } from '@crumb/core';
-import { useProfile } from '../../data/user';
+import { useProfile, useUser } from '../../data/user';
 import { useDay, useDays } from '../../data/day';
 import { useMemory } from '../../data/memory';
 import { SectionTitle } from '../../components/ui/Card';
@@ -27,6 +27,7 @@ import { useInsight } from './useInsight';
 
 export function HomeScreen() {
   const { uid, profile, targets } = useProfile();
+  const { sampleData } = useUser();
   const navigate = useNavigate();
   const today = todayKey(profile.timezone);
   const [date, setDate] = useState(today);
@@ -138,14 +139,19 @@ export function HomeScreen() {
             )}
           </div>
         </div>
-        {streak > 1 && (
+        {sampleData && (
+          <Pill className="mt-2" title="Generated for a demo, not real health data">
+            Sample history
+          </Pill>
+        )}
+        {!sampleData && streak > 1 && (
           <Pill tone="primary" className="mt-2">
             <Flame className="size-3.5" aria-hidden /> {streak}-day streak
           </Pill>
         )}
       </header>
 
-      <NutritionCard summary={day.summary} targets={targets} />
+      <NutritionCard summary={day.summary} targets={targets} isToday={isToday} />
       {isToday && (
         <NextStepCard
           uid={uid}

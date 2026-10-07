@@ -409,7 +409,7 @@ export const FOODS: FoodDef[] = [
     ['upma', 'uppittu', 'rava upma', 'sooji upma'],
     { allergens: G, oilSensitive: true },
   ),
-  food('idli', 'Idli', '🍘', 'breakfast', 'vegan', [131, 4.5, 27, 0.6], { piece: 40 }, 'piece', [
+  food('idli', 'Idli', '🍚', 'breakfast', 'vegan', [131, 4.5, 27, 0.6], { piece: 40 }, 'piece', [
     'idli',
     'idly',
     'rava idli',

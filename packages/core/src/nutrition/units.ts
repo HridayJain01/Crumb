@@ -98,6 +98,16 @@ export function unitLabel(unit: Unit, quantity: number): string {
   return quantity === 1 ? one : many;
 }
 
+/**
+ * Rounds a remembered (averaged) amount to something a person actually serves: whole rotis
+ * and slices, half katoris and glasses, quarters below one, 5 g / 5 ml steps.
+ */
+export function naturalQuantity(quantity: number, unit: Unit): number {
+  if (unit === 'g' || unit === 'ml') return Math.max(5, Math.round(quantity / 5) * 5);
+  const step = quantity < 1 ? 0.25 : unit === 'piece' || unit === 'slice' ? 1 : 0.5;
+  return Math.max(0.25, Math.round(quantity / step) * step);
+}
+
 /** "2 rotis", "1 bowl", "150 g" — compact quantity text for cards. */
 export function formatQuantity(quantity: number, unit: Unit): string {
   const q = Number.isInteger(quantity)
