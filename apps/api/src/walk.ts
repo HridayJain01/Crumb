@@ -40,7 +40,7 @@ export async function planWalkRoutes(
     bearings.map(async (bearing, i): Promise<RouteOption | null> => {
       let sizeKm = plan.distanceKm;
       let waypoints = loopWaypoints(req.origin, sizeKm, bearing);
-      let route: MeasuredRoute | null = null;
+      let route: MeasuredRoute | null;
       try {
         route = await deps.routes.walkingLoop(req.origin, waypoints);
         const off = (route.distanceKm - plan.distanceKm) / plan.distanceKm;

@@ -86,9 +86,8 @@ export function slugify(text: string): string {
 
 /** Collapse whitespace, strip control characters and cap length; for any user/AI-provided label. */
 export function cleanLabel(text: string, max = 80): string {
-  // eslint-disable-next-line no-control-regex
   return text
-    .replace(/[\u0000-\u001f\u007f]/g, ' ')
+    .replace(/\p{Cc}/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, max);

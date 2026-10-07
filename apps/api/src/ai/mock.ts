@@ -115,7 +115,7 @@ export function createMockAiClient(opts: { delayMs?: number } = {}): AiClient {
       const insight =
         t.mealsLogged === 0
           ? 'Nothing logged yet today — a quick photo is enough to get started.'
-          : `You're at ~${Math.round(t.kcal)} of ~${Math.round(t.kcalTarget)} kcal today${gap > 5 ? `, with protein ~${gap} g below target` : ' and protein is on track'}.`;
+          : `You're at ~${(Math.round(t.kcal / 50) * 50).toLocaleString('en-IN')} of ~${(Math.round(t.kcalTarget / 50) * 50).toLocaleString('en-IN')} kcal today${gap > 5 ? `, with protein ~${Math.round(gap / 5) * 5} g below target` : ' and protein is on track'}.`;
       return {
         value: { insight, action: context.chosenAction.text },
         model: 'mock-text',

@@ -1,0 +1,127 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/nunito';
+
+/*
+ * Crumb design tokens. Warm, friendly, not clinical (PRD §19).
+ * Every text/background pair below meets WCAG AA; status is never colour-only.
+ */
+@theme {
+  --font-sans: 'Nunito Variable', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-bg: #fff8f1;
+  --color-surface: #ffffff;
+  --color-surface-2: #fdefe2;
+  --color-line: #f1e3d3;
+  --color-ink: #2a1e17;
+  --color-muted: #6f5e51;
+
+  --color-primary: #c9471f;
+  --color-primary-strong: #a93a17;
+  --color-primary-ink: #b23c19;
+  --color-primary-soft: #fde3d8;
+  --color-primary-bright: #f2643d;
+
+  --color-teal: #0f766e;
+  --color-teal-soft: #ddf3ef;
+
+  --color-success: #1e7a44;
+  --color-success-soft: #e7f6ec;
+  --color-warning: #8a5a00;
+  --color-warning-soft: #fff4d6;
+  --color-danger: #b42318;
+  --color-danger-soft: #fdecea;
+
+  --color-protein: #0f766e;
+  --color-carbs: #3b66d6;
+  --color-fat: #a8437f;
+  --color-kcal: #f2643d;
+
+  --radius-chip: 999px;
+  --radius-card: 1.25rem;
+  --radius-sheet: 1.75rem;
+
+  --shadow-card: 0 1px 2px rgb(42 30 23 / 0.05), 0 6px 16px rgb(42 30 23 / 0.05);
+  --shadow-float: 0 6px 20px rgb(201 71 31 / 0.32);
+
+  --animate-pop: pop 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-fade-up: fade-up 260ms ease-out;
+  --animate-shimmer: shimmer 1.4s linear infinite;
+
+  @keyframes pop {
+    0% {
+      transform: scale(0.96);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes fade-up {
+    0% {
+      transform: translateY(6px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    font-feature-settings: 'tnum' 1;
+    overscroll-behavior-y: none;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-primary-bright);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  button,
+  [role='button'] {
+    cursor: pointer;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@utility safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+}
+
+@utility skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-2) 25%,
+    #fff6ee 50%,
+    var(--color-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

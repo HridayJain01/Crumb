@@ -152,11 +152,14 @@ export function generateRecommendations(ctx: RecommendationContext): Recommendat
   }
 
   if (!out.length) {
+    const early = hour < 14 && today.mealsLogged > 0;
     out.push({
       kind: 'on_track',
       priority: 10,
-      title: 'You’re on track',
-      text: 'Nice and steady today. Keep logging as you go.',
+      title: early ? 'Good start' : 'You’re on track',
+      text: early
+        ? 'Plenty of day left — including some protein in your next meals keeps you on course.'
+        : 'Nice and steady today. Keep logging as you go.',
     });
   }
 
